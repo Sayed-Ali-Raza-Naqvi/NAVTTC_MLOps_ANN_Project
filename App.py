@@ -2,13 +2,13 @@ import streamlit as st
 import pandas as pd
 import tensorflow as tf
 from sklearn.preprocessing import StandardScaler
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 from fpdf import FPDF
 
 # Load the Keras model
 @st.cache_resource
 def load_model_once():
-    model = load_model('path/to/your/model.h5')
+    model = load_model('alzhemiers_prediction.keras')
     return model
 
 model = load_model_once()
