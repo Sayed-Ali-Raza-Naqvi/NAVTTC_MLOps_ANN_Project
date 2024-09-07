@@ -238,7 +238,7 @@ if st.button('Predict'):
     st.write(f'Confidence Score: {confidence:.2f}')
     
     # Generate and display the PDF report
-    pdf_bytes = create_pdf_report(inputs, prediction, confidence, name=name, email=email)
+    pdf_bytes = create_pdf_report(input_data, prediction, confidence, name=name, email=email)
 
     # Create a download button
     st.download_button(
