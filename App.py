@@ -21,7 +21,7 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     width, height = letter
     
     def draw_styled_title(title, y):
-        c.setFont("Helvetica-Bold", 16)
+        c.setFont("Helvetica-Bold", 18)
         c.setFillColor(HexColor("#003366"))  # Dark blue color
         c.drawString(100, y, title)
         c.setFillColor(HexColor("#000000"))  # Black color for subsequent text
@@ -39,6 +39,12 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
         c.drawString(100, y, f"{label}: {text}")
         return y - 20
     
+    def draw_separator(y):
+        c.setLineWidth(1)
+        c.setStrokeColor(HexColor("#666666"))  # Gray color for the line
+        c.line(80, y, width - 80, y)  # Draws a line between sections
+        return y - 30  # Adds space after the line
+
     # Function to create a new page
     def new_page():
         c.showPage()
@@ -48,6 +54,7 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     # Start drawing the PDF
     y = height - 50
     
+    # Styled title for the report
     y = draw_styled_title("Alzheimer's Disease Diagnosis Report", y)
     y -= 10
     c.setFont("Helvetica", 12)
@@ -56,21 +63,26 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     c.drawString(100, y, f"Email: {email}")
     y -= 30
     
+    # General Details
     y = draw_section_header("General Details", y)
     y = draw_text("Age", inputs['Age'][0], y)
     y = draw_text("Gender", inputs['Gender'][0], y)
+    y = draw_separator(y)
     
-    if y < 100:  # Check if content is too low, start a new page
+    if y < 100:
         y = new_page()
-    
+
+    # Lifestyle Factors
     y = draw_section_header("Lifestyle Factors", y)
     y = draw_text("BMI", inputs['BMI'][0], y)
     y = draw_text("Smoking", inputs['Smoking'][0], y)
     y = draw_text("Alcohol Consumption", inputs['AlcoholConsumption'][0], y)
+    y = draw_separator(y)
     
     if y < 100:
         y = new_page()
     
+    # Medical History
     y = draw_section_header("Medical History", y)
     y = draw_text("Family History of Alzheimer’s", inputs['FamilyHistoryAlzheimers'][0], y)
     y = draw_text("Cardiovascular Disease", inputs['CardiovascularDisease'][0], y)
@@ -78,39 +90,47 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     y = draw_text("Depression", inputs['Depression'][0], y)
     y = draw_text("Head Injury", inputs['HeadInjury'][0], y)
     y = draw_text("Hypertension", inputs['Hypertension'][0], y)
+    y = draw_separator(y)
     
     if y < 100:
         y = new_page()
-    
+
+    # Clinical Measurements
     y = draw_section_header("Clinical Measurements", y)
     y = draw_text("Total Cholesterol", inputs['CholesterolTotal'][0], y)
     y = draw_text("LDL Cholesterol", inputs['CholesterolLDL'][0], y)
     y = draw_text("HDL Cholesterol", inputs['CholesterolHDL'][0], y)
     y = draw_text("Triglycerides", inputs['CholesterolTriglycerides'][0], y)
+    y = draw_separator(y)
     
     if y < 100:
         y = new_page()
     
+    # Cognitive and Functional Assessments
     y = draw_section_header("Cognitive and Functional Assessments", y)
     y = draw_text("MMSE Score", inputs['MMSE'][0], y)
     y = draw_text("Functional Assessment Score", inputs['FunctionalAssessment'][0], y)
     y = draw_text("Memory Complaints", inputs['MemoryComplaints'][0], y)
     y = draw_text("Behavioral Problems", inputs['BehavioralProblems'][0], y)
     y = draw_text("ADL Score", inputs['ADL'][0], y)
+    y = draw_separator(y)
     
     if y < 100:
         y = new_page()
     
+    # Symptoms
     y = draw_section_header("Symptoms", y)
     y = draw_text("Confusion", inputs['Confusion'][0], y)
     y = draw_text("Disorientation", inputs['Disorientation'][0], y)
     y = draw_text("Personality Changes", inputs['PersonalityChanges'][0], y)
     y = draw_text("Difficulty Completing Tasks", inputs['DifficultyCompletingTasks'][0], y)
     y = draw_text("Forgetting", inputs['Forgetfulness'][0], y)
+    y = draw_separator(y)
     
     if y < 100:
         y = new_page()
     
+    # Prediction and Confidence
     y -= 40
     c.setFont("Helvetica-Bold", 12)
     c.drawString(100, y, f"Prediction (0: No Alzheimer’s, 1: Alzheimer’s): {int(prediction[0][0] > 0.5)}")
@@ -121,7 +141,6 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     
     buffer.seek(0)
     return buffer
-
 # Streamlit app
 st.title('Alzheimer\'s Disease Diagnosis Prediction')
 
