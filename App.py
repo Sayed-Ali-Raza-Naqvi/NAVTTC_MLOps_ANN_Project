@@ -94,7 +94,7 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     pdf.cell(200, 10, txt=f"Disorientation: {inputs['Disorientation'][0]}", ln=True)
     pdf.cell(200, 10, txt=f"Personality Changes: {inputs['PersonalityChanges'][0]}", ln=True)
     pdf.cell(200, 10, txt=f"Difficulty Completing Tasks: {inputs['DifficultyCompletingTasks'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"Forgetting: {inputs['Forgetfulness'][0]}", ln=True)
+    pdf.cell(200, 10, txt=f"Forgetfulness: {inputs['Forgetfulness'][0]}", ln=True)
     
     pdf.ln(10)
     
@@ -105,7 +105,7 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     pdf_file = "diagnosis_report.pdf"
     pdf.output(pdf_file)
     return pdf_file
-
+    
 # Streamlit app
 st.title('Alzheimer\'s Disease Diagnosis Prediction')
 
@@ -207,11 +207,18 @@ input_data = pd.DataFrame({
     'Forgetfulness': [forgetfulness]
 })
 
-# Separate columns for scaling
-columns_to_scale = ['Age', 'BMI', 'CholesterolTotal', 'CholesterolLDL', 'CholesterolHDL', 'CholesterolTriglycerides']
-scaled_data = input_data.copy()
+columns_to_scale = ['Age', 'BMI', 'CholesterolTotal', 'CholesterolLDL', 'CholesterolHDL']
 
-scaled_data[columns_to_scale] = scaler.fit_transform(input_data[columns_to_scale])
+# Separate columns for scaling
+input_data_scaled = input_data.copy()
+
+# Scale only specified columns
+input_data_scaled[columns_to_scale] = scaler.fit_transform(input_data[columns_to_scale])
+
+# Combine scaled columns with unscaled columns
+# Drop the original unscaled columns and merge with the scaled ones
+scaled_data_full = pd.concat([input_data_scaled[columns_to_scale], 
+                               input_data.drop(columns=columns_to_scale)], axis=1)
 
 # Predict
 st.header('Prediction')
