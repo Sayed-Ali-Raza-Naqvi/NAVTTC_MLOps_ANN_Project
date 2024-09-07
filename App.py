@@ -240,10 +240,10 @@ if st.button('Predict'):
     # Generate and display the PDF report
     pdf_bytes = create_pdf_report(inputs, prediction, confidence, name=name, email=email)
 
-# Create a download button
-st.download_button(
-    label="Download PDF Report",
-    data=pdf_bytes,
-    file_name="diagnosis_report.pdf",
-    mime="application/pdf"
-)
+    # Create a download button
+    st.download_button(
+        label="Download PDF Report",
+        data=pdf_bytes,
+        file_name="diagnosis_report.pdf",
+        mime="application/pdf"
+    )
