@@ -193,7 +193,11 @@ scaled_data[columns_to_scale] = scaler.fit_transform(input_data[columns_to_scale
 
 # Predict
 st.header('Prediction')
-st.write("0: No Alzheimer's    1: Alzheimer's Diagnosed")
+st.write("### Prediction Explanation")
+st.write("The prediction indicates the likelihood of Alzheimer’s Disease based on the provided inputs.")
+st.write("A value of 0 means 'No Alzheimer’s Disease' and a value of 1 means 'Alzheimer’s Disease'.")
+st.write(f"Prediction result: {int(prediction[0][0] > 0.5)} (where 1 indicates Alzheimer’s Disease)")
+
 if st.button('Predict'):
     prediction = model.predict(scaled_data)
     confidence = prediction[0][0]
