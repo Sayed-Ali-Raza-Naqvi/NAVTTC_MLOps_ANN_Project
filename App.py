@@ -4,7 +4,9 @@ from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import load_model
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-from io import BytesIO
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.lib.colors import HexColor
 
 # Load the Keras model
 model = load_model('alzhemiers_prediction.keras')
@@ -18,80 +20,92 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     c = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
     
+    def draw_styled_title(title, y):
+        c.setFont("Helvetica-Bold", 16)
+        c.setFillColor(HexColor("#003366"))  # Dark blue color
+        c.drawString(100, y, title)
+        c.setFillColor(HexColor("#000000"))  # Black color for subsequent text
+        return y - 30
+    
+    def draw_section_header(title, y):
+        c.setFont("Helvetica-Bold", 14)
+        c.setFillColor(HexColor("#0066CC"))  # Blue color for section headers
+        c.drawString(100, y, title)
+        c.setFillColor(HexColor("#000000"))  # Black color for subsequent text
+        return y - 20
+    
+    def draw_text(label, text, y):
+        c.setFont("Helvetica", 12)
+        c.drawString(100, y, f"{label}: {text}")
+        return y - 20
+    
+    # Start drawing the PDF
+    y = height - 50
+    
+    y = draw_styled_title("Alzheimer's Disease Diagnosis Report", y)
+    y -= 10
     c.setFont("Helvetica", 12)
+    c.drawString(100, y, f"Name: {name}")
+    y -= 20
+    c.drawString(100, y, f"Email: {email}")
+    y -= 30
     
-    c.drawString(100, height - 50, "Alzheimer's Disease Diagnosis Report")
-    c.drawString(100, height - 80, f"Name: {name}")
-    c.drawString(100, height - 100, f"Email: {email}")
+    def new_page():
+        c.showPage()
+        c.setFont("Helvetica", 12)
+        return height - 50
     
-    y = height - 140
+    y = draw_section_header("General Details", y)
+    y = draw_text("Age", inputs['Age'][0], y)
+    y = draw_text("Gender", inputs['Gender'][0], y)
     
-    c.drawString(100, y, "General Details")
-    y -= 20
-    c.drawString(100, y, f"Age: {inputs['Age'][0]}")
-    y -= 20
-    c.drawString(100, y, f"Gender: {inputs['Gender'][0]}")
+    if y < 100:
+        y = new_page()
     
-    y -= 40
-    c.drawString(100, y, "Lifestyle Factors")
-    y -= 20
-    c.drawString(100, y, f"BMI: {inputs['BMI'][0]}")
-    y -= 20
-    c.drawString(100, y, f"Smoking: {inputs['Smoking'][0]}")
-    y -= 20
-    c.drawString(100, y, f"Alcohol Consumption: {inputs['AlcoholConsumption'][0]}")
+    y = draw_section_header("Lifestyle Factors", y)
+    y = draw_text("BMI", inputs['BMI'][0], y)
+    y = draw_text("Smoking", inputs['Smoking'][0], y)
+    y = draw_text("Alcohol Consumption", inputs['AlcoholConsumption'][0], y)
     
-    y -= 40
-    c.drawString(100, y, "Medical History")
-    y -= 20
-    c.drawString(100, y, f"Family History of Alzheimer’s: {inputs['FamilyHistoryAlzheimers'][0]}")
-    y -= 20
-    c.drawString(100, y, f"Cardiovascular Disease: {inputs['CardiovascularDisease'][0]}")
-    y -= 20
-    c.drawString(100, y, f"Diabetes: {inputs['Diabetes'][0]}")
-    y -= 20
-    c.drawString(100, y, f"Depression: {inputs['Depression'][0]}")
-    y -= 20
-    c.drawString(100, y, f"Head Injury: {inputs['HeadInjury'][0]}")
-    y -= 20
-    c.drawString(100, y, f"Hypertension: {inputs['Hypertension'][0]}")
+    if y < 100:
+        y = new_page()
     
-    y -= 40
-    c.drawString(100, y, "Clinical Measurements")
-    y -= 20
-    c.drawString(100, y, f"Total Cholesterol: {inputs['CholesterolTotal'][0]}")
-    y -= 20
-    c.drawString(100, y, f"LDL Cholesterol: {inputs['CholesterolLDL'][0]}")
-    y -= 20
-    c.drawString(100, y, f"HDL Cholesterol: {inputs['CholesterolHDL'][0]}")
-    y -= 20
-    c.drawString(100, y, f"Triglycerides: {inputs['CholesterolTriglycerides'][0]}")
+    y = draw_section_header("Medical History", y)
+    y = draw_text("Family History of Alzheimer’s", inputs['FamilyHistoryAlzheimers'][0], y)
+    y = draw_text("Cardiovascular Disease", inputs['CardiovascularDisease'][0], y)
+    y = draw_text("Diabetes", inputs['Diabetes'][0], y)
+    y = draw_text("Depression", inputs['Depression'][0], y)
+    y = draw_text("Head Injury", inputs['HeadInjury'][0], y)
+    y = draw_text("Hypertension", inputs['Hypertension'][0], y)
     
-    y -= 40
-    c.drawString(100, y, "Cognitive and Functional Assessments")
-    y -= 20
-    c.drawString(100, y, f"MMSE Score: {inputs['MMSE'][0]}")
-    y -= 20
-    c.drawString(100, y, f"Functional Assessment Score: {inputs['FunctionalAssessment'][0]}")
-    y -= 20
-    c.drawString(100, y, f"Memory Complaints: {inputs['MemoryComplaints'][0]}")
-    y -= 20
-    c.drawString(100, y, f"Behavioral Problems: {inputs['BehavioralProblems'][0]}")
-    y -= 20
-    c.drawString(100, y, f"ADL Score: {inputs['ADL'][0]}")
+    if y < 100:
+        y = new_page()
     
-    y -= 40
-    c.drawString(100, y, "Symptoms")
-    y -= 20
-    c.drawString(100, y, f"Confusion: {inputs['Confusion'][0]}")
-    y -= 20
-    c.drawString(100, y, f"Disorientation: {inputs['Disorientation'][0]}")
-    y -= 20
-    c.drawString(100, y, f"Personality Changes: {inputs['PersonalityChanges'][0]}")
-    y -= 20
-    c.drawString(100, y, f"Difficulty Completing Tasks: {inputs['DifficultyCompletingTasks'][0]}")
-    y -= 20
-    c.drawString(100, y, f"Forgetting: {inputs['Forgetfulness'][0]}")
+    y = draw_section_header("Clinical Measurements", y)
+    y = draw_text("Total Cholesterol", inputs['CholesterolTotal'][0], y)
+    y = draw_text("LDL Cholesterol", inputs['CholesterolLDL'][0], y)
+    y = draw_text("HDL Cholesterol", inputs['CholesterolHDL'][0], y)
+    y = draw_text("Triglycerides", inputs['CholesterolTriglycerides'][0], y)
+    
+    if y < 100:
+        y = new_page()
+    
+    y = draw_section_header("Cognitive and Functional Assessments", y)
+    y = draw_text("MMSE Score", inputs['MMSE'][0], y)
+    y = draw_text("Functional Assessment Score", inputs['FunctionalAssessment'][0], y)
+    y = draw_text("Memory Complaints", inputs['MemoryComplaints'][0], y)
+    y = draw_text("Behavioral Problems", inputs['BehavioralProblems'][0], y)
+    y = draw_text("ADL Score", inputs['ADL'][0], y)
+    
+    if y < 100:
+        y = new_page()
+    
+    y = draw_section_header("Symptoms", y)
+    y = draw_text("Confusion", inputs['Confusion'][0], y)
+    y = draw_text("Disorientation", inputs['Disorientation'][0], y)
+    y = draw_text("Personality Changes", inputs['PersonalityChanges'][0], y)
+    y = draw_text("Difficulty Completing Tasks", inputs['DifficultyCompletingTasks'][0], y)
+    y = draw_text("Forgetting", inputs['Forgetfulness'][0], y)
     
     y -= 40
     c.drawString(100, y, f"Prediction (0: No Alzheimer’s, 1: Alzheimer’s): {int(prediction[0][0] > 0.5)}")
