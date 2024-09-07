@@ -196,7 +196,6 @@ st.header('Prediction')
 st.write("### Prediction Explanation")
 st.write("The prediction indicates the likelihood of Alzheimer’s Disease based on the provided inputs.")
 st.write("A value of 0 means 'No Alzheimer’s Disease' and a value of 1 means 'Alzheimer’s Disease'.")
-st.write(f"Prediction result: {int(prediction[0][0] > 0.5)} (where 1 indicates Alzheimer’s Disease)")
 
 if st.button('Predict'):
     prediction = model.predict(scaled_data)
@@ -204,7 +203,7 @@ if st.button('Predict'):
     result = int(confidence > 0.5)
     
     # Show prediction result
-    st.write(f'Prediction (0: No Alzheimer\'s, 1: Alzheimer\'s): {result}')
+    st.write(f'Prediction: {result}')
     st.write(f'Confidence Score: {confidence:.2f}')
     
     # Generate and display the PDF report
