@@ -3,6 +3,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import load_model
 from fpdf import FPDF
+import tensorflow
 
 # Load the Keras model
 model = load_model('alzhemiers_prediction.keras')
