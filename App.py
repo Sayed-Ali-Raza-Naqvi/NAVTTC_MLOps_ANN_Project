@@ -1,17 +1,11 @@
 import streamlit as st
 import pandas as pd
-import tensorflow as tf
 from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import load_model
 from fpdf import FPDF
 
 # Load the Keras model
-@st.cache_resource
-def load_model_once():
-    model = load_model('alzhemiers_prediction.keras')
-    return model
-
-model = load_model_once()
+model = load_model('alzhemiers_prediction.keras.h5')
 
 # Initialize the scaler (use the same scaler used during training)
 scaler = StandardScaler()
@@ -56,6 +50,7 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     pdf.cell(200, 10, txt=f"Total Cholesterol: {inputs['CholesterolTotal'][0]}", ln=True)
     pdf.cell(200, 10, txt=f"LDL Cholesterol: {inputs['CholesterolLDL'][0]}", ln=True)
     pdf.cell(200, 10, txt=f"HDL Cholesterol: {inputs['CholesterolHDL'][0]}", ln=True)
+    pdf.cell(200, 10, txt=f"Triglycerides: {inputs['CholesterolTriglycerides'][0]}", ln=True)
     
     pdf.ln(10)
     
@@ -92,7 +87,7 @@ st.header('General Details')
 st.write("These details help in understanding the basic demographic information of the patient, which is essential for tailoring the prediction model.")
 name = st.text_input('Name')
 email = st.text_input('Email')
-age = st.slider('Age', 60, 90)
+age = st.slider('Age', 20, 90)
 gender = st.selectbox('Gender', [0, 1])
 
 st.header('Lifestyle Factors')
@@ -111,10 +106,11 @@ head_injury = st.selectbox('History of Head Injury', [0, 1])
 hypertension = st.selectbox('Hypertension', [0, 1])
 
 st.header('Clinical Measurements')
-st.write("Clinical measurements such as cholesterol levels are important indicators of overall health and can influence the risk of Alzheimer’s disease. This section gathers those metrics.")
+st.write("Clinical measurements such as cholesterol levels and triglycerides are important indicators of overall health and can influence the risk of Alzheimer’s disease. This section gathers those metrics.")
 cholesterol_total = st.slider('Total Cholesterol (mg/dL)', 150, 300)
 cholesterol_ldl = st.slider('LDL Cholesterol (mg/dL)', 50, 200)
 cholesterol_hdl = st.slider('HDL Cholesterol (mg/dL)', 20, 100)
+cholesterol_triglycerides = st.slider('Triglycerides (mg/dL)', 50, 300)
 
 st.header('Cognitive and Functional Assessments')
 st.write("Assessments of cognitive and functional abilities provide insights into the patient’s mental state and daily functioning, which are crucial for diagnosing Alzheimer’s disease.")
@@ -148,6 +144,7 @@ input_data = pd.DataFrame({
     'CholesterolTotal': [cholesterol_total],
     'CholesterolLDL': [cholesterol_ldl],
     'CholesterolHDL': [cholesterol_hdl],
+    'CholesterolTriglycerides': [cholesterol_triglycerides],
     'MMSE': [mmse],
     'FunctionalAssessment': [functional_assessment],
     'MemoryComplaints': [memory_complaints],
@@ -161,7 +158,7 @@ input_data = pd.DataFrame({
 })
 
 # Separate columns for scaling
-columns_to_scale = ['Age', 'BMI', 'CholesterolTotal', 'CholesterolLDL', 'CholesterolHDL']
+columns_to_scale = ['Age', 'BMI', 'CholesterolTotal', 'CholesterolLDL', 'CholesterolHDL', 'CholesterolTriglycerides']
 scaled_data = input_data.copy()
 
 # Scale only specified columns
