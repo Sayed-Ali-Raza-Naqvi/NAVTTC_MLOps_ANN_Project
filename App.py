@@ -19,26 +19,26 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
-    
+
     def draw_styled_title(title, y):
         c.setFont("Helvetica-Bold", 18)
         c.setFillColor(HexColor("#003366"))  # Dark blue color
         c.drawString(100, y, title)
         c.setFillColor(HexColor("#000000"))  # Black color for subsequent text
         return y - 30
-    
+
     def draw_section_header(title, y):
         c.setFont("Helvetica-Bold", 14)
         c.setFillColor(HexColor("#0066CC"))  # Blue color for section headers
         c.drawString(100, y, title)
         c.setFillColor(HexColor("#000000"))  # Black color for subsequent text
         return y - 20
-    
+
     def draw_text(label, text, y):
         c.setFont("Helvetica", 12)
         c.drawString(100, y, f"{label}: {text}")
         return y - 20
-    
+
     def draw_separator(y):
         c.setLineWidth(1)
         c.setStrokeColor(HexColor("#666666"))  # Gray color for the line
@@ -50,10 +50,10 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
         c.showPage()
         c.setFont("Helvetica", 12)
         return height - 50  # Reset y for the new page
-    
+
     # Start drawing the PDF
     y = height - 50
-    
+
     # Styled title for the report
     y = draw_styled_title("Alzheimer's Disease Diagnosis Report", y)
     y -= 10
@@ -62,13 +62,13 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     y -= 20
     c.drawString(100, y, f"Email: {email}")
     y -= 30
-    
+
     # General Details
     y = draw_section_header("General Details", y)
     y = draw_text("Age", inputs['Age'][0], y)
     y = draw_text("Gender", inputs['Gender'][0], y)
     y = draw_separator(y)
-    
+
     if y < 100:
         y = new_page()
 
@@ -78,10 +78,10 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     y = draw_text("Smoking", inputs['Smoking'][0], y)
     y = draw_text("Alcohol Consumption", inputs['AlcoholConsumption'][0], y)
     y = draw_separator(y)
-    
+
     if y < 100:
         y = new_page()
-    
+
     # Medical History
     y = draw_section_header("Medical History", y)
     y = draw_text("Family History of Alzheimer’s", inputs['FamilyHistoryAlzheimers'][0], y)
@@ -91,7 +91,7 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     y = draw_text("Head Injury", inputs['HeadInjury'][0], y)
     y = draw_text("Hypertension", inputs['Hypertension'][0], y)
     y = draw_separator(y)
-    
+
     if y < 100:
         y = new_page()
 
@@ -102,10 +102,10 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     y = draw_text("HDL Cholesterol", inputs['CholesterolHDL'][0], y)
     y = draw_text("Triglycerides", inputs['CholesterolTriglycerides'][0], y)
     y = draw_separator(y)
-    
+
     if y < 100:
         y = new_page()
-    
+
     # Cognitive and Functional Assessments
     y = draw_section_header("Cognitive and Functional Assessments", y)
     y = draw_text("MMSE Score", inputs['MMSE'][0], y)
@@ -114,10 +114,10 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     y = draw_text("Behavioral Problems", inputs['BehavioralProblems'][0], y)
     y = draw_text("ADL Score", inputs['ADL'][0], y)
     y = draw_separator(y)
-    
+
     if y < 100:
         y = new_page()
-    
+
     # Symptoms
     y = draw_section_header("Symptoms", y)
     y = draw_text("Confusion", inputs['Confusion'][0], y)
@@ -126,23 +126,23 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     y = draw_text("Difficulty Completing Tasks", inputs['DifficultyCompletingTasks'][0], y)
     y = draw_text("Forgetting", inputs['Forgetfulness'][0], y)
     y = draw_separator(y)
-    
+
     if y < 100:
         y = new_page()
-    
+
     # Prediction and Confidence
     y -= 40
     c.setFont("Helvetica-Bold", 12)
     c.drawString(100, y, f"Prediction (0: No Alzheimer’s, 1: Alzheimer’s): {int(prediction[0][0] > 0.5)}")
     y -= 20
     c.drawString(100, y, f"Confidence Score: {confidence:.2f}")
-    
+
+    # Save the PDF to the buffer
     c.save()
-    
-    buffer.seek(0)
+
+    buffer.seek(0)  # Move buffer position to the start
     return buffer
 
-    
 # Streamlit app
 st.title('Alzheimer\'s Disease Diagnosis Prediction')
 
@@ -278,9 +278,11 @@ if st.button('Predict'):
     # Create a download button
     pdf_buffer = create_pdf_report(input_data, prediction, confidence, name=name, email=email)
 
+    pdf_bytes = create_pdf_report(input_data, prediction, confidence, name=name, email=email)
+
     st.download_button(
         label="Download PDF Report",
-        data=pdf_buffer.getvalue(),
+        data=pdf_bytes,
         file_name="diagnosis_report.pdf",
         mime="application/pdf"
     )
