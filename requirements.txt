@@ -4,6 +4,5 @@ seaborn
 matplotlib
 scikit-learn
 streamlit
-fpdf2
-fpdf
+reportlab
 tensorflow==2.16.1
