@@ -211,7 +211,7 @@ input_data = pd.DataFrame({
 columns_to_scale = ['Age', 'BMI', 'CholesterolTotal', 'CholesterolLDL', 'CholesterolHDL', 'CholesterolTriglycerides']
 scaled_data = input_data.copy()
 
-input_data[columns_to_scale] = scaler.fit_transform(input_data[columns_to_scale])
+scaled_data[columns_to_scale] = scaler.fit_transform(input_data[columns_to_scale])
 
 # Predict
 st.header('Prediction')
