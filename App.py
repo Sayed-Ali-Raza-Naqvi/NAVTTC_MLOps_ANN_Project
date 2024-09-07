@@ -209,7 +209,7 @@ input_data = pd.DataFrame({
     'Forgetfulness': [forgetfulness]
 })
 
-columns_to_scale = ['Age', 'BMI', 'CholesterolTotal', 'CholesterolLDL', 'CholesterolHDL']
+columns_to_scale = ['Age', 'BMI', 'CholesterolTotal', 'CholesterolLDL', 'CholesterolHDL', 'CholesterolTriglycerides']
 
 # Separate columns for scaling
 input_data_scaled = input_data.copy()
