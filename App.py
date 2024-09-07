@@ -101,12 +101,7 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     c.save()
     
     buffer.seek(0)
-    pdf_file = "diagnosis_report.pdf"
-    
-    with open(pdf_file, "wb") as f:
-        f.write(buffer.getvalue())
-    
-    return pdf_file
+    return buffer
     
 # Streamlit app
 st.title('Alzheimer\'s Disease Diagnosis Prediction')
@@ -241,9 +236,11 @@ if st.button('Predict'):
     pdf_bytes = create_pdf_report(input_data, prediction, confidence, name=name, email=email)
 
     # Create a download button
+    pdf_buffer = create_pdf_report(input_data, prediction, confidence, name=name, email=email)
+
     st.download_button(
         label="Download PDF Report",
-        data=pdf_bytes,
+        data=pdf_buffer.getvalue(),
         file_name="diagnosis_report.pdf",
         mime="application/pdf"
     )
