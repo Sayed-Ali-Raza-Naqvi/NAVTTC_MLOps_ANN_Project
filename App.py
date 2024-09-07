@@ -227,7 +227,7 @@ st.write("The prediction indicates the likelihood of Alzheimer’s Disease based
 st.write("A value of 0 means 'No Alzheimer’s Disease' and a value of 1 means 'Alzheimer’s Disease'.")
 
 if st.button('Predict'):
-    prediction = model.predict(input_data)
+    prediction = model.predict(scaled_data_full)
     confidence = prediction[0][0]
     result = int(confidence > 0.5)
     
