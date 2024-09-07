@@ -128,7 +128,7 @@ alcohol_consumption = st.slider('Alcohol Consumption (units per week)', 0, 20)
 
 st.header('Medical History')
 st.write(### "A patient’s medical history, including family history and chronic conditions, provides important context for assessing Alzheimer's risk. This section collects relevant medical information.")
-st.write('Family history of Alzheimer's Disease, where 0 indicates No and 1 indicates Yes.')
+st.write("Family history of Alzheimer's Disease, where 0 indicates No and 1 indicates Yes.")
 family_history_alzheimers = st.selectbox('Family History of Alzheimer\'s Disease', [0, 1])
 st.write('Presence of cardiovascular disease, where 0 indicates No and 1 indicates Yes.')
 cardiovascular_disease = st.selectbox('Cardiovascular Disease', [0, 1])
