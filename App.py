@@ -7,6 +7,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.lib.colors import HexColor
+from io import BytesIO
 
 # Load the Keras model
 model = load_model('alzhemiers_prediction.keras')
