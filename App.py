@@ -192,6 +192,8 @@ scaled_data = input_data.copy()
 scaled_data[columns_to_scale] = scaler.fit_transform(input_data[columns_to_scale])
 
 # Predict
+st.header('Prediction')
+st.write("0: No Alzheimer's    1: Alzheimer's Diagnosed")
 if st.button('Predict'):
     prediction = model.predict(scaled_data)
     confidence = prediction[0][0]
