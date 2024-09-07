@@ -211,12 +211,7 @@ input_data = pd.DataFrame({
 columns_to_scale = ['Age', 'BMI', 'CholesterolTotal', 'CholesterolLDL', 'CholesterolHDL', 'CholesterolTriglycerides']
 scaled_data = input_data.copy()
 
-# Scale only specified columns
-scaled_data[columns_to_scale] = scaler.fit_transform(input_data[columns_to_scale])
-
-# Combine scaled columns with unscaled columns
-# Drop the original unscaled columns and merge with the scaled ones
-scaled_data_full = pd.concat([scaled_data[columns_to_scale], input_data.drop(columns=columns_to_scale)], axis=1)
+input_data[columns_to_scale] = scaler.fit_transform(input_data[columns_to_scale])
 
 # Predict
 st.header('Prediction')
@@ -225,7 +220,7 @@ st.write("The prediction indicates the likelihood of Alzheimer’s Disease based
 st.write("A value of 0 means 'No Alzheimer’s Disease' and a value of 1 means 'Alzheimer’s Disease'.")
 
 if st.button('Predict'):
-    prediction = model.predict(scaled_data_full)
+    prediction = model.predict(input_data)
     confidence = prediction[0][0]
     result = int(confidence > 0.5)
     
