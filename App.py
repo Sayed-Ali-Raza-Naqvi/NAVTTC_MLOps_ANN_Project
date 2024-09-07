@@ -152,7 +152,7 @@ cholesterol_ldl = st.slider('LDL Cholesterol (mg/dL)', 50, 200)
 st.write('High-density lipoprotein cholesterol levels, ranging from 20 to 100 mg/dL.')
 cholesterol_hdl = st.slider('HDL Cholesterol (mg/dL)', 20, 100)
 st.write('Triglycerides levels, ranging from 50 to 400 mg/dL.')
-cholesterol_triglycerides = st.slider('Triglycerides (mg/dL)', 50, 300)
+cholesterol_triglycerides = st.slider('Triglycerides (mg/dL)', 50, 400)
 
 st.header('Cognitive and Functional Assessments')
 st.write("**Assessments of cognitive and functional abilities provide insights into the patient’s mental state and daily functioning, which are crucial for diagnosing Alzheimer’s disease.**")
