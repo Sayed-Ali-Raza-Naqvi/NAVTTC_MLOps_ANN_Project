@@ -19,24 +19,38 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     pdf.cell(200, 10, txt="Alzheimer's Disease Diagnosis Report", ln=True, align='C')
     pdf.ln(10)
     
+    pdf.set_font("Arial", style='B', size=12)
     pdf.cell(200, 10, txt=f"Name: {name}", ln=True)
     pdf.cell(200, 10, txt=f"Email: {email}", ln=True)
+    
     pdf.ln(10)
     
-    pdf.cell(200, 10, txt="General Details", ln=True, bold=True)
+    # General Details
+    pdf.set_font("Arial", style='B', size=12)
+    pdf.cell(200, 10, txt="General Details", ln=True)
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt="These details help in understanding the basic demographic information of the patient, which is essential for tailoring the prediction model.", ln=True)
     pdf.cell(200, 10, txt=f"Age: {inputs['Age'][0]}", ln=True)
     pdf.cell(200, 10, txt=f"Gender: {inputs['Gender'][0]}", ln=True)
     
     pdf.ln(10)
     
-    pdf.cell(200, 10, txt="Lifestyle Factors", ln=True, bold=True)
+    # Lifestyle Factors
+    pdf.set_font("Arial", style='B', size=12)
+    pdf.cell(200, 10, txt="Lifestyle Factors", ln=True)
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt="Lifestyle factors such as BMI, smoking, and alcohol consumption can significantly influence the risk of Alzheimer’s disease. This section helps capture those aspects.", ln=True)
     pdf.cell(200, 10, txt=f"BMI: {inputs['BMI'][0]}", ln=True)
     pdf.cell(200, 10, txt=f"Smoking: {inputs['Smoking'][0]}", ln=True)
     pdf.cell(200, 10, txt=f"Alcohol Consumption: {inputs['AlcoholConsumption'][0]}", ln=True)
     
     pdf.ln(10)
     
-    pdf.cell(200, 10, txt="Medical History", ln=True, bold=True)
+    # Medical History
+    pdf.set_font("Arial", style='B', size=12)
+    pdf.cell(200, 10, txt="Medical History", ln=True)
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt="A patient’s medical history, including family history and chronic conditions, provides important context for assessing Alzheimer's risk. This section collects relevant medical information.", ln=True)
     pdf.cell(200, 10, txt=f"Family History of Alzheimer’s: {inputs['FamilyHistoryAlzheimers'][0]}", ln=True)
     pdf.cell(200, 10, txt=f"Cardiovascular Disease: {inputs['CardiovascularDisease'][0]}", ln=True)
     pdf.cell(200, 10, txt=f"Diabetes: {inputs['Diabetes'][0]}", ln=True)
@@ -46,7 +60,11 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     
     pdf.ln(10)
     
-    pdf.cell(200, 10, txt="Clinical Measurements", ln=True, bold=True)
+    # Clinical Measurements
+    pdf.set_font("Arial", style='B', size=12)
+    pdf.cell(200, 10, txt="Clinical Measurements", ln=True)
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt="Clinical measurements such as cholesterol levels and triglycerides are important indicators of overall health and can influence the risk of Alzheimer’s disease. This section gathers those metrics.", ln=True)
     pdf.cell(200, 10, txt=f"Total Cholesterol: {inputs['CholesterolTotal'][0]}", ln=True)
     pdf.cell(200, 10, txt=f"LDL Cholesterol: {inputs['CholesterolLDL'][0]}", ln=True)
     pdf.cell(200, 10, txt=f"HDL Cholesterol: {inputs['CholesterolHDL'][0]}", ln=True)
@@ -54,7 +72,11 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     
     pdf.ln(10)
     
-    pdf.cell(200, 10, txt="Cognitive and Functional Assessments", ln=True, bold=True)
+    # Cognitive and Functional Assessments
+    pdf.set_font("Arial", style='B', size=12)
+    pdf.cell(200, 10, txt="Cognitive and Functional Assessments", ln=True)
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt="Assessments of cognitive and functional abilities provide insights into the patient’s mental state and daily functioning, which are crucial for diagnosing Alzheimer’s disease.", ln=True)
     pdf.cell(200, 10, txt=f"MMSE Score: {inputs['MMSE'][0]}", ln=True)
     pdf.cell(200, 10, txt=f"Functional Assessment Score: {inputs['FunctionalAssessment'][0]}", ln=True)
     pdf.cell(200, 10, txt=f"Memory Complaints: {inputs['MemoryComplaints'][0]}", ln=True)
@@ -63,7 +85,11 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     
     pdf.ln(10)
     
-    pdf.cell(200, 10, txt="Symptoms", ln=True, bold=True)
+    # Symptoms
+    pdf.set_font("Arial", style='B', size=12)
+    pdf.cell(200, 10, txt="Symptoms", ln=True)
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt="Symptoms such as confusion, disorientation, and personality changes are key indicators of cognitive decline. This section collects information on these symptoms to aid in the diagnosis.", ln=True)
     pdf.cell(200, 10, txt=f"Confusion: {inputs['Confusion'][0]}", ln=True)
     pdf.cell(200, 10, txt=f"Disorientation: {inputs['Disorientation'][0]}", ln=True)
     pdf.cell(200, 10, txt=f"Personality Changes: {inputs['PersonalityChanges'][0]}", ln=True)
@@ -72,6 +98,7 @@ def create_pdf_report(inputs, prediction, confidence, name, email):
     
     pdf.ln(10)
     
+    pdf.set_font("Arial", size=12)
     pdf.cell(200, 10, txt=f"Prediction (0: No Alzheimer’s, 1: Alzheimer’s): {int(prediction[0][0] > 0.5)}", ln=True)
     pdf.cell(200, 10, txt=f"Confidence Score: {confidence:.2f}", ln=True)
     
