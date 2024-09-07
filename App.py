@@ -6,7 +6,12 @@ from keras.models import load_model
 from fpdf import FPDF
 
 # Load the Keras model
-model = load_model('alzhemiers_prediction.keras')
+@st.cache_resource
+def load_model_once():
+    model = load_model('path/to/your/model.h5')
+    return model
+
+model = load_model_once()
 
 # Initialize the scaler (use the same scaler used during training)
 scaler = StandardScaler()
