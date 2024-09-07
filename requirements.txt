@@ -1,6 +1,10 @@
 pandas
+numpy
+seaborn
+matplotlib.pyplot
 scikit-learn
 streamlit
 keras
 fpdf
 tensorflow
+mlflow
