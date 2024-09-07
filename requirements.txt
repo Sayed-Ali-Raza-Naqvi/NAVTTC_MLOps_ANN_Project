@@ -4,6 +4,5 @@ seaborn
 matplotlib
 scikit-learn
 streamlit
-keras
+tensorflow==2.16.1
 fpdf
-mlflow
