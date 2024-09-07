@@ -2,7 +2,9 @@ import streamlit as st
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import load_model
-from fpdf2 import FPDF
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from io import BytesIO
 
 # Load the Keras model
 model = load_model('alzhemiers_prediction.keras')
@@ -12,98 +14,98 @@ scaler = StandardScaler()
 
 # Function to create PDF report
 def create_pdf_report(inputs, prediction, confidence, name, email):
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
     
-    pdf.cell(200, 10, txt="Alzheimer's Disease Diagnosis Report", ln=True, align='C')
-    pdf.ln(10)
+    c.setFont("Helvetica", 12)
     
-    pdf.set_font("Arial", style='B', size=12)
-    pdf.cell(200, 10, txt=f"Name: {name}", ln=True)
-    pdf.cell(200, 10, txt=f"Email: {email}", ln=True)
+    c.drawString(100, height - 50, "Alzheimer's Disease Diagnosis Report")
+    c.drawString(100, height - 80, f"Name: {name}")
+    c.drawString(100, height - 100, f"Email: {email}")
     
-    pdf.ln(10)
+    y = height - 140
     
-    # General Details
-    pdf.set_font("Arial", style='B', size=12)
-    pdf.cell(200, 10, txt="General Details", ln=True)
-    pdf.set_font("Arial", size=12)
-    pdf.multi_cell(0, 10, txt="These details help in understanding the basic demographic information of the patient, which is essential for tailoring the prediction model.")
-    pdf.cell(200, 10, txt=f"Age: {inputs['Age'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"Gender: {inputs['Gender'][0]}", ln=True)
+    c.drawString(100, y, "General Details")
+    y -= 20
+    c.drawString(100, y, f"Age: {inputs['Age'][0]}")
+    y -= 20
+    c.drawString(100, y, f"Gender: {inputs['Gender'][0]}")
     
-    pdf.ln(10)
+    y -= 40
+    c.drawString(100, y, "Lifestyle Factors")
+    y -= 20
+    c.drawString(100, y, f"BMI: {inputs['BMI'][0]}")
+    y -= 20
+    c.drawString(100, y, f"Smoking: {inputs['Smoking'][0]}")
+    y -= 20
+    c.drawString(100, y, f"Alcohol Consumption: {inputs['AlcoholConsumption'][0]}")
     
-    # Lifestyle Factors
-    pdf.set_font("Arial", style='B', size=12)
-    pdf.cell(200, 10, txt="Lifestyle Factors", ln=True)
-    pdf.set_font("Arial", size=12)
-    pdf.multi_cell(0, 10, txt="Lifestyle factors such as BMI, smoking, and alcohol consumption can significantly influence the risk of Alzheimer’s disease. This section helps capture those aspects.")
-    pdf.cell(200, 10, txt=f"BMI: {inputs['BMI'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"Smoking: {inputs['Smoking'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"Alcohol Consumption: {inputs['AlcoholConsumption'][0]}", ln=True)
+    y -= 40
+    c.drawString(100, y, "Medical History")
+    y -= 20
+    c.drawString(100, y, f"Family History of Alzheimer’s: {inputs['FamilyHistoryAlzheimers'][0]}")
+    y -= 20
+    c.drawString(100, y, f"Cardiovascular Disease: {inputs['CardiovascularDisease'][0]}")
+    y -= 20
+    c.drawString(100, y, f"Diabetes: {inputs['Diabetes'][0]}")
+    y -= 20
+    c.drawString(100, y, f"Depression: {inputs['Depression'][0]}")
+    y -= 20
+    c.drawString(100, y, f"Head Injury: {inputs['HeadInjury'][0]}")
+    y -= 20
+    c.drawString(100, y, f"Hypertension: {inputs['Hypertension'][0]}")
     
-    pdf.ln(10)
+    y -= 40
+    c.drawString(100, y, "Clinical Measurements")
+    y -= 20
+    c.drawString(100, y, f"Total Cholesterol: {inputs['CholesterolTotal'][0]}")
+    y -= 20
+    c.drawString(100, y, f"LDL Cholesterol: {inputs['CholesterolLDL'][0]}")
+    y -= 20
+    c.drawString(100, y, f"HDL Cholesterol: {inputs['CholesterolHDL'][0]}")
+    y -= 20
+    c.drawString(100, y, f"Triglycerides: {inputs['CholesterolTriglycerides'][0]}")
     
-    # Medical History
-    pdf.set_font("Arial", style='B', size=12)
-    pdf.cell(200, 10, txt="Medical History", ln=True)
-    pdf.set_font("Arial", size=12)
-    pdf.multi_cell(0, 10, txt="A patient’s medical history, including family history and chronic conditions, provides important context for assessing Alzheimer's risk. This section collects relevant medical information.")
-    pdf.cell(200, 10, txt=f"Family History of Alzheimer’s: {inputs['FamilyHistoryAlzheimers'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"Cardiovascular Disease: {inputs['CardiovascularDisease'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"Diabetes: {inputs['Diabetes'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"Depression: {inputs['Depression'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"Head Injury: {inputs['HeadInjury'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"Hypertension: {inputs['Hypertension'][0]}", ln=True)
+    y -= 40
+    c.drawString(100, y, "Cognitive and Functional Assessments")
+    y -= 20
+    c.drawString(100, y, f"MMSE Score: {inputs['MMSE'][0]}")
+    y -= 20
+    c.drawString(100, y, f"Functional Assessment Score: {inputs['FunctionalAssessment'][0]}")
+    y -= 20
+    c.drawString(100, y, f"Memory Complaints: {inputs['MemoryComplaints'][0]}")
+    y -= 20
+    c.drawString(100, y, f"Behavioral Problems: {inputs['BehavioralProblems'][0]}")
+    y -= 20
+    c.drawString(100, y, f"ADL Score: {inputs['ADL'][0]}")
     
-    pdf.ln(10)
+    y -= 40
+    c.drawString(100, y, "Symptoms")
+    y -= 20
+    c.drawString(100, y, f"Confusion: {inputs['Confusion'][0]}")
+    y -= 20
+    c.drawString(100, y, f"Disorientation: {inputs['Disorientation'][0]}")
+    y -= 20
+    c.drawString(100, y, f"Personality Changes: {inputs['PersonalityChanges'][0]}")
+    y -= 20
+    c.drawString(100, y, f"Difficulty Completing Tasks: {inputs['DifficultyCompletingTasks'][0]}")
+    y -= 20
+    c.drawString(100, y, f"Forgetting: {inputs['Forgetfulness'][0]}")
     
-    # Clinical Measurements
-    pdf.set_font("Arial", style='B', size=12)
-    pdf.cell(200, 10, txt="Clinical Measurements", ln=True)
-    pdf.set_font("Arial", size=12)
-    pdf.multi_cell(0, 10, txt="Clinical measurements such as cholesterol levels and triglycerides are important indicators of overall health and can influence the risk of Alzheimer’s disease. This section gathers those metrics.")
-    pdf.cell(200, 10, txt=f"Total Cholesterol: {inputs['CholesterolTotal'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"LDL Cholesterol: {inputs['CholesterolLDL'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"HDL Cholesterol: {inputs['CholesterolHDL'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"Triglycerides: {inputs['CholesterolTriglycerides'][0]}", ln=True)
+    y -= 40
+    c.drawString(100, y, f"Prediction (0: No Alzheimer’s, 1: Alzheimer’s): {int(prediction[0][0] > 0.5)}")
+    y -= 20
+    c.drawString(100, y, f"Confidence Score: {confidence:.2f}")
     
-    pdf.ln(10)
+    c.save()
     
-    # Cognitive and Functional Assessments
-    pdf.set_font("Arial", style='B', size=12)
-    pdf.cell(200, 10, txt="Cognitive and Functional Assessments", ln=True)
-    pdf.set_font("Arial", size=12)
-    pdf.multi_cell(0, 10, txt="Assessments of cognitive and functional abilities provide insights into the patient’s mental state and daily functioning, which are crucial for diagnosing Alzheimer’s disease.")
-    pdf.cell(200, 10, txt=f"MMSE Score: {inputs['MMSE'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"Functional Assessment Score: {inputs['FunctionalAssessment'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"Memory Complaints: {inputs['MemoryComplaints'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"Behavioral Problems: {inputs['BehavioralProblems'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"ADL Score: {inputs['ADL'][0]}", ln=True)
-    
-    pdf.ln(10)
-    
-    # Symptoms
-    pdf.set_font("Arial", style='B', size=12)
-    pdf.cell(200, 10, txt="Symptoms", ln=True)
-    pdf.set_font("Arial", size=12)
-    pdf.multi_cell(0, 10, txt="Symptoms such as confusion, disorientation, and personality changes are key indicators of cognitive decline. This section collects information on these symptoms to aid in the diagnosis.")
-    pdf.cell(200, 10, txt=f"Confusion: {inputs['Confusion'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"Disorientation: {inputs['Disorientation'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"Personality Changes: {inputs['PersonalityChanges'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"Difficulty Completing Tasks: {inputs['DifficultyCompletingTasks'][0]}", ln=True)
-    pdf.cell(200, 10, txt=f"Forgetfulness: {inputs['Forgetfulness'][0]}", ln=True)
-    
-    pdf.ln(10)
-    
-    pdf.set_font("Arial", size=12)
-    pdf.cell(200, 10, txt=f"Prediction (0: No Alzheimer’s, 1: Alzheimer’s): {int(prediction[0][0] > 0.5)}", ln=True)
-    pdf.cell(200, 10, txt=f"Confidence Score: {confidence:.2f}", ln=True)
-    
+    buffer.seek(0)
     pdf_file = "diagnosis_report.pdf"
-    pdf.output(pdf_file)
+    
+    with open(pdf_file, "wb") as f:
+        f.write(buffer.getvalue())
+    
     return pdf_file
     
 # Streamlit app
@@ -236,11 +238,12 @@ if st.button('Predict'):
     st.write(f'Confidence Score: {confidence:.2f}')
     
     # Generate and display the PDF report
-    pdf_file = create_pdf_report(input_data, prediction, confidence, name, email)
-    with open(pdf_file, "rb") as f:
-        st.download_button(
-            label="Download Report",
-            data=f,
-            file_name=pdf_file,
-            mime="application/pdf"
-        )
+    pdf_bytes = create_pdf_report(inputs, prediction, confidence, name=name, email=email)
+
+# Create a download button
+st.download_button(
+    label="Download PDF Report",
+    data=pdf_bytes,
+    file_name="diagnosis_report.pdf",
+    mime="application/pdf"
+)
