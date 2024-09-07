@@ -111,48 +111,71 @@ st.title('Alzheimer\'s Disease Diagnosis Prediction')
 
 # Input section
 st.header('General Details')
-st.write("These details help in understanding the basic demographic information of the patient, which is essential for tailoring the prediction model.")
+st.write(### "These details help in understanding the basic demographic information of the patient, which is essential for tailoring the prediction model.")
 name = st.text_input('Name')
 email = st.text_input('Email')
 age = st.slider('Age', 20, 90)
+st.write('0 for male and 1 for female.')
 gender = st.selectbox('Gender', [0, 1])
 
 st.header('Lifestyle Factors')
-st.write("Lifestyle factors such as BMI, smoking, and alcohol consumption can significantly influence the risk of Alzheimer’s disease. This section helps capture those aspects.")
+st.write(### "Lifestyle factors such as BMI, smoking, and alcohol consumption can significantly influence the risk of Alzheimer’s disease. This section helps capture those aspects.")
 bmi = st.slider('BMI', 15.0, 40.0)
+st.write('Smoking status, where 0 indicates No and 1 indicates Yes.')
 smoking = st.selectbox('Smoking Status', [0, 1])
+st.write('Weekly alcohol consumption in units, ranging from 0 to 20.')
 alcohol_consumption = st.slider('Alcohol Consumption (units per week)', 0, 20)
 
 st.header('Medical History')
-st.write("A patient’s medical history, including family history and chronic conditions, provides important context for assessing Alzheimer's risk. This section collects relevant medical information.")
+st.write(### "A patient’s medical history, including family history and chronic conditions, provides important context for assessing Alzheimer's risk. This section collects relevant medical information.")
+st.write('Family history of Alzheimer's Disease, where 0 indicates No and 1 indicates Yes.')
 family_history_alzheimers = st.selectbox('Family History of Alzheimer\'s Disease', [0, 1])
+st.write('Presence of cardiovascular disease, where 0 indicates No and 1 indicates Yes.')
 cardiovascular_disease = st.selectbox('Cardiovascular Disease', [0, 1])
+st.write('Presence of diabetes, where 0 indicates No and 1 indicates Yes.')
 diabetes = st.selectbox('Diabetes', [0, 1])
+st.write(' Presence of depression, where 0 indicates No and 1 indicates Yes.')
 depression = st.selectbox('Depression', [0, 1])
+st.write('History of head injury, where 0 indicates No and 1 indicates Yes.')
 head_injury = st.selectbox('History of Head Injury', [0, 1])
+st.write('Presence of hypertension, where 0 indicates No and 1 indicates Yes.')
 hypertension = st.selectbox('Hypertension', [0, 1])
 
 st.header('Clinical Measurements')
-st.write("Clinical measurements such as cholesterol levels and triglycerides are important indicators of overall health and can influence the risk of Alzheimer’s disease. This section gathers those metrics.")
+st.write(### "Clinical measurements such as cholesterol levels and triglycerides are important indicators of overall health and can influence the risk of Alzheimer’s disease. This section gathers those metrics.")
+st.write('Total cholesterol levels, ranging from 150 to 300 mg/dL.')
 cholesterol_total = st.slider('Total Cholesterol (mg/dL)', 150, 300)
+st.write('Low-density lipoprotein cholesterol levels, ranging from 50 to 200 mg/dL.')
 cholesterol_ldl = st.slider('LDL Cholesterol (mg/dL)', 50, 200)
+st.write('High-density lipoprotein cholesterol levels, ranging from 20 to 100 mg/dL.')
 cholesterol_hdl = st.slider('HDL Cholesterol (mg/dL)', 20, 100)
+st.write('Triglycerides levels, ranging from 50 to 400 mg/dL.')
 cholesterol_triglycerides = st.slider('Triglycerides (mg/dL)', 50, 300)
 
 st.header('Cognitive and Functional Assessments')
-st.write("Assessments of cognitive and functional abilities provide insights into the patient’s mental state and daily functioning, which are crucial for diagnosing Alzheimer’s disease.")
+st.write(### "Assessments of cognitive and functional abilities provide insights into the patient’s mental state and daily functioning, which are crucial for diagnosing Alzheimer’s disease.")
+st.write('Mini-Mental State Examination score, ranging from 0 to 30. Lower scores indicate cognitive impairment.')
 mmse = st.slider('MMSE Score', 0, 30)
+st.write('Functional assessment score, ranging from 0 to 10. Lower scores indicate greater impairment.')
 functional_assessment = st.slider('Functional Assessment Score', 0, 10)
+st.write('Presence of memory complaints, where 0 indicates No and 1 indicates Yes.')
 memory_complaints = st.selectbox('Memory Complaints', [0, 1])
+st.write('Presence of behavioral problems, where 0 indicates No and 1 indicates Yes.')
 behavioral_problems = st.selectbox('Behavioral Problems', [0, 1])
+st.write('Activities of Daily Living score, ranging from 0 to 10. Lower scores indicate greater impairment.')
 adl = st.slider('Activities of Daily Living Score', 0, 10)
 
 st.header('Symptoms')
-st.write("Symptoms such as confusion, disorientation, and personality changes are key indicators of cognitive decline. This section collects information on these symptoms to aid in the diagnosis.")
+st.write(### "Symptoms such as confusion, disorientation, and personality changes are key indicators of cognitive decline. This section collects information on these symptoms to aid in the diagnosis.")
+st.write('Presence of confusion, where 0 indicates No and 1 indicates Yes.')
 confusion = st.selectbox('Confusion', [0, 1])
+st.write('Presence of disorientation, where 0 indicates No and 1 indicates Yes.')
 disorientation = st.selectbox('Disorientation', [0, 1])
+st.write('Presence of personality changes, where 0 indicates No and 1 indicates Yes.')
 personality_changes = st.selectbox('Personality Changes', [0, 1])
+st.write('Presence of difficulty completing tasks, where 0 indicates No and 1 indicates Yes.')
 difficulty_completing_tasks = st.selectbox('Difficulty Completing Tasks', [0, 1])
+st.write('Presence of forgetfulness, where 0 indicates No and 1 indicates Yes.')
 forgetfulness = st.selectbox('Forgetfulness', [0, 1])
 
 # Create a DataFrame with the user inputs
@@ -191,6 +214,10 @@ scaled_data = input_data.copy()
 # Scale only specified columns
 scaled_data[columns_to_scale] = scaler.fit_transform(input_data[columns_to_scale])
 
+# Combine scaled columns with unscaled columns
+# Drop the original unscaled columns and merge with the scaled ones
+scaled_data_full = pd.concat([scaled_data[columns_to_scale], input_data.drop(columns=columns_to_scale)], axis=1)
+
 # Predict
 st.header('Prediction')
 st.write("### Prediction Explanation")
@@ -198,7 +225,7 @@ st.write("The prediction indicates the likelihood of Alzheimer’s Disease based
 st.write("A value of 0 means 'No Alzheimer’s Disease' and a value of 1 means 'Alzheimer’s Disease'.")
 
 if st.button('Predict'):
-    prediction = model.predict(scaled_data)
+    prediction = model.predict(scaled_data_full)
     confidence = prediction[0][0]
     result = int(confidence > 0.5)
     
