@@ -5,4 +5,5 @@ matplotlib
 scikit-learn
 streamlit
 fpdf2
+fpdf
 tensorflow==2.16.1
